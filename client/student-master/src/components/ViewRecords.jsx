@@ -3,13 +3,15 @@ import Navigation from './Navigation';
 import axios from 'axios';
 import { Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Box } from '@mui/material';
 
+let SERVER_URL = "https://studentrecordmanager.onrender.com"
+
 export default function ViewRecords() {
     const [students, setStudents] = useState([]);
     const [classes, setClasses] = useState([]);
 
     // Fetch students data from backend
     useEffect(() => {
-        axios.get('http://localhost:8080/students')
+        axios.get(SERVER_URL + '/students')
             .then(response => {
                 setStudents(response.data);
             })
@@ -20,7 +22,7 @@ export default function ViewRecords() {
 
     // Fetch classes data from backend
     useEffect(() => {
-        axios.get('http://localhost:8080/classes')
+        axios.get(SERVER_URL + '/classes')
             .then(response => {
                 setClasses(response.data);
             })

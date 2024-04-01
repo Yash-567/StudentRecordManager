@@ -6,6 +6,8 @@ import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import axios from 'axios';
 import { Typography } from '@mui/material';
 
+let SERVER_URL = "https://studentrecordmanager.onrender.com"
+
 export default function UploadFiles() {
     const [selectedFile, setSelectedFile] = useState(null);
 
@@ -26,7 +28,7 @@ export default function UploadFiles() {
         const formData = new FormData();
         formData.append('file', selectedFile);
 
-        axios.post('http://localhost:8080/upload', formData)
+        axios.post(SERVER_URL + '/upload', formData)
             .then(response => {
                 console.log(response);
                 setSelectedFile(null);
