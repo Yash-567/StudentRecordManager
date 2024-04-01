@@ -1,9 +1,9 @@
 import express from 'express';
 import { getStudent, getStudents, createStudent, getClasses, getClass, createClass } from './database.js';
 import cors from 'cors';
-import multer from 'multer'; // Import multer for handling file uploads
-import csvParser from 'csv-parser'; // Import csv-parser for parsing CSV files
-import fs from 'fs'; // Import fs module to interact with the file system
+import multer from 'multer'; 
+import csvParser from 'csv-parser'; 
+import fs from 'fs';
 import dotenv from 'dotenv'
 
 dotenv.config()
@@ -14,7 +14,7 @@ app.use(express.json());
 app.use(cors());
 
 // Configure multer for file upload
-const upload = multer({ dest: 'uploads/' }); // Specify the destination folder for uploaded files
+const upload = multer({ dest: 'uploads/' }); 
 
 // Student Master table
 app.get("/students", async (req, res)=>{
@@ -58,7 +58,6 @@ app.post("/upload", upload.single('file'), async (req, res) => {
         return res.status(400).send("No file uploaded.");
     }
 
-    // Parse the uploaded CSV file
     const filePath = req.file.path;
     const results = [];
 
@@ -68,21 +67,17 @@ app.post("/upload", upload.single('file'), async (req, res) => {
             // Push each parsed row into the results array
             results.push(data);
 
-            // Extract data from the row
-            const { Name, Email, Class, Result } = data;
 
             try {
-                // Create student
+                const { Name, Email, Class, Result } = data;
                 const student = await createStudent(Name, Email);
 
-                // Create class
                 await createClass(student.id, Class, Result);
             } catch (error) {
                 console.error("Error creating student or class:", error);
             }
         })
         .on('end', () => {
-            // Handle parsed data (results)
             res.status(200).send("File uploaded and parsed successfully.");
         });
 });

@@ -6,10 +6,12 @@ import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import axios from 'axios';
 import { Typography } from '@mui/material';
 
-let SERVER_URL = "https://studentrecordmanager.onrender.com"
+let SERVER_URL = "https://studentrecordmanager.onrender.com";
 
 export default function UploadFiles() {
     const [selectedFile, setSelectedFile] = useState(null);
+    const [uploadMessage, setUploadMessage] = useState('');
+    const [error, setError] = useState('');
 
     const VisuallyHiddenInput = styled('input')({
         clip: 'rect(0 0 0 0)',
@@ -24,7 +26,15 @@ export default function UploadFiles() {
     });
 
     const handleFileUpload = () => {
-        if (!selectedFile) return; // Check if a file is selected
+        if (!selectedFile) {
+            setError('Please select a file.');
+            return;
+        }
+        // Check if the selected file is a CSV file
+        if (!selectedFile.name.endsWith('.csv')) {
+            setError('Please select a CSV file.');
+            return;
+        }
         const formData = new FormData();
         formData.append('file', selectedFile);
 
@@ -32,15 +42,21 @@ export default function UploadFiles() {
             .then(response => {
                 console.log(response);
                 setSelectedFile(null);
+                setUploadMessage('File uploaded successfully.');
+                setError('');
             })
             .catch(error => {
                 console.error(error);
+                setUploadMessage('');
+                setError('Error uploading file.');
             });
     };
 
     const handleFileChange = (event) => {
         const file = event.target.files[0];
         setSelectedFile(file);
+        setUploadMessage('');
+        setError('');
     };
 
     return (
@@ -66,8 +82,11 @@ export default function UploadFiles() {
                                 onChange={handleFileChange}
                             />
                         </Button>
+                        {selectedFile && <Typography variant="body1">{selectedFile.name}</Typography>}
+                        {error && <Typography variant="body1" style={{ color: 'red' }}>{error}</Typography>}
                     </div>
                     <Button onClick={handleFileUpload}>Submit</Button>
+                    {uploadMessage && <Typography variant="body1" style={{ marginTop: '10px', color: 'green' }}>{uploadMessage}</Typography>}
                 </form>
             </div>
         </>
